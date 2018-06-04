@@ -20,32 +20,32 @@
 #define dc   9
 #define rst  8  //  reset
 
-#include   <Adafruit_GFX.h>  // Core graphics library
-#include   <Adafruit_ST7735.h>// Hardware-specific library
+#include   <Adafruit_GFX.h>  
+#include   <Adafruit_ST7735.h>
 #include   <SPI.h>
 Adafruit_ST7735 tft = Adafruit_ST7735(cs, dc, rst);
-// number of analog samples to take per reading, per channel
-#define NSAMP 100 // number of samples to take befor displaying
-// voltage divider calibration values
+// número de amostras analógicas para leituras por canal
+#define NSAMP 100 // número de amostras atéexibir no display
+// calibração dos divisores de tensão
 #define Dv1    100.00
 #define Dv2    11.001
 #define Dv3    110.00
 #define Dv4    10.985
-// ADC reference voltage / calibration value
+// ADC tensão de referência / valor de calibração
 #define VREF    5.00
 
-float sum[4] = {0};                // sums of samples taken
-unsigned char Scount = 0;  // current sample number
-float AVvolts[4] = {0};        // calculated voltages
-char cnt1 = 0;                  // used in 'for' loops
+float sum[4] = {0};                // soma das amostras
+unsigned char Scount = 0;  // número da amostra atual
+float AVvolts[4] = {0};        // cáculo de tensão
+char cnt1 = 0;                 
 
 
 
 void setup()
 {
   
-   tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
-   tft.fillScreen(ST7735_BLUE); //  blue screen
+   tft.initR(INITR_BLACKTAB);   // initializa o ST7735S
+   tft.fillScreen(ST7735_BLUE); //  tela azul
    tft.setTextSize(3);
    tft.setCursor(39,40);
    tft.println("BMW");
@@ -54,7 +54,7 @@ void setup()
    tft.setCursor(1,80);
    tft.println("K1200RS");
    delay(1500);
-   tft.fillScreen(ST7735_BLACK); //  clear screen
+   tft.fillScreen(ST7735_BLACK); //  limpa tela
    tft.setTextColor(ST7735_RED);
    tft.drawRoundRect(2, 20, 120, 110, 5,ST7735_WHITE);
    tft.drawRoundRect(36, 0, 53, 19, 5,ST7735_RED);
@@ -70,24 +70,24 @@ void setup()
 void loop()
 {
   
-    // take a number of analog samples and add them up
+    // captura o número de amostras analógicas e exibe
     while (Scount < NSAMP) {
-        // sample each channel A0 to A3
+        // amostra de cada canal A0 até A3
         for (cnt1 = 0; cnt1 < 4; cnt1++) {
             sum[cnt1] += analogRead(A0 + cnt1);
         }
         Scount++;
         delay(10);
     }
-    // calculate the voltage for each channel
+    // calcula a tensão de cada canal
     for (cnt1 = 0; cnt1 < 4; cnt1++) {
         AVvolts[cnt1] = ((float)sum[cnt1] / (float)NSAMP * VREF) / 1024.0;
     }
-    // display voltages on TFT LCC Display
+    // mostra o resultado no LCD
    
   
-    // voltage 1 - V1(pin A0  
-    tft.setTextColor(ST7735_YELLOW,ST7735_BLACK); // set color for V1
+    // tensão 1 - V1(pin A0  
+    tft.setTextColor(ST7735_YELLOW,ST7735_BLACK); // ajusta cor em V1
     tft.setTextSize(2);
     if(AVvolts[0]*Dv1 < 20)//Ajusta limite do aviso de baixo nível de combustível
     { tft.setTextColor(ST7735_BLACK,ST7735_WHITE);
@@ -112,8 +112,8 @@ void loop()
         tft.print(" ");
     }  
       
-    // voltage 2 - V2(pin A1)
-    tft.setTextColor(ST7735_GREEN,ST7735_BLACK);// set color for V2
+    // tensão 2 - V2(pin A1)
+    tft.setTextColor(ST7735_GREEN,ST7735_BLACK);// ajusta cor em V2
     tft.setCursor(10, 55);
     tft.print("Bat ");
     tft.setCursor(55, 55);
@@ -127,7 +127,7 @@ void loop()
     tft.print("V");
     // voltge 3 - V3(pin A2)
     
-    tft.setTextColor(ST7735_CYAN,ST7735_BLACK);// set color for V3
+    tft.setTextColor(ST7735_CYAN,ST7735_BLACK);// ajusta cor em V3
     if(AVvolts[2]*Dv3 > 100)//Ajusta limite do aviso de TEMPERATURA ALTA
      {tft.setTextColor(ST7735_YELLOW,ST7735_RED);
       }
@@ -146,7 +146,7 @@ void loop()
     tft.setCursor(105, 82);
     tft.print("C");
     // voltage 4 - V4(pin A3)
-    tft.setTextColor(ST7735_WHITE,ST7735_BLACK);// set color for V4
+    tft.setTextColor(ST7735_WHITE,ST7735_BLACK);// ajusta cor em V4
     tft.setCursor(10, 108);
       if(AVvolts[2]*Dv3 > 99){
         tft.print(" ATENCAO ");
@@ -172,7 +172,7 @@ void loop()
     tft.drawLine(4,103,120,103,ST7735_WHITE);
    
       
-    // reset count and sums
+    // zera contagem e soma
     Scount = 0;
     for (cnt1 = 0; cnt1 < 4; cnt1++) {
         sum[cnt1] = 0;
