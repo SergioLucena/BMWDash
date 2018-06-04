@@ -14,11 +14,11 @@
 
   Author:      Sergio de Lucena
 --------------------------------------------------------------*/
-#define sclk 13
-#define mosi 11
-#define cs   10
-#define dc   9
-#define rst  8  //  reset
+#define sclk 13 //
+#define mosi 11 //
+#define cs   10 //  define pinos do módulo LCD
+#define dc   9  //
+#define rst  8  //
 
 #include   <Adafruit_GFX.h>  
 #include   <Adafruit_ST7735.h>
